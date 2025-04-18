@@ -1,4 +1,4 @@
-name = "twitch-api-mod-mail"
+name = "discord-mod-mail"
 main = "./src/server.ts"
 compatibility_date = "2025-04-10"
 
