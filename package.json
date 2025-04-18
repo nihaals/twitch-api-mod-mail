@@ -1,0 +1,19 @@
+{
+  "name": "twitch-api-mod-mail",
+  "repository": "https://github.com/nihaals/twitch-api-mod-mail",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@discordjs/rest": "^2.4.3",
+    "discord-api-types": "^0.37.120",
+    "discord-interactions": "^4.1.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  }
+}

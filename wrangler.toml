@@ -1,0 +1,11 @@
+name = "twitch-api-mod-mail"
+main = "./src/server.ts"
+compatibility_date = "2025-04-10"
+
+[version_metadata]
+binding = "CF_VERSION_METADATA"
+
+[vars]
+DISCORD_CHANNEL_ID = "1129933835417698434"
+DISCORD_MESSAGE_ID = "1362169566964351217"
+DISCORD_MODERATOR_ROLE_ID = "325553773508558850"
