@@ -1,21 +1,21 @@
 import { REST } from "@discordjs/rest"
 import {
-  Routes,
-  RESTPostAPIChannelMessageJSONBody,
-  RESTPatchAPIChannelMessageJSONBody,
   APIButtonComponentWithCustomId,
-  ButtonStyle,
-  ComponentType,
-  RESTPostAPIChannelThreadsJSONBody,
-  ChannelType,
-  Snowflake,
-  RESTPatchAPIChannelJSONBody,
   APIInteractionResponseChannelMessageWithSource,
+  APIInteractionResponseDeferredMessageUpdate,
+  ButtonStyle,
+  ChannelType,
+  ComponentType,
   InteractionResponseType,
   InteractionType,
   MessageFlags,
+  RESTPatchAPIChannelJSONBody,
+  RESTPatchAPIChannelMessageJSONBody,
+  RESTPostAPIChannelMessageJSONBody,
+  RESTPostAPIChannelThreadsJSONBody,
+  Routes,
+  Snowflake,
   ThreadAutoArchiveDuration,
-  APIInteractionResponseDeferredMessageUpdate,
 } from "discord-api-types/v10"
 import { verifyKey } from "discord-interactions"
 
