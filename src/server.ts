@@ -85,7 +85,7 @@ const interactionsHandler = async (interaction: any, env: Env): Promise<Response
         rest,
         interaction.channel_id,
         interaction.member.user.id,
-        interaction.data.custom_id
+        interaction.data.custom_id,
       )
       await closeThread(rest, interaction.channel_id, interaction.data.custom_id, interaction.member.user.id)
       return jsonResponse(interactionHandledResponse)
@@ -149,7 +149,7 @@ const sendStartThreadMessage = async (
   rest: REST,
   threadId: Snowflake,
   moderatorsId: Snowflake,
-  authorId: Snowflake
+  authorId: Snowflake,
 ): Promise<object> => {
   const archiveButton: APIButtonComponentWithCustomId = {
     type: ComponentType.Button,
@@ -189,7 +189,7 @@ const sendClosedThreadMessage = async (
   rest: REST,
   threadId: Snowflake,
   closerId: Snowflake,
-  archiveType: ButtonCustomId.ARCHIVE_THREAD | ButtonCustomId.LOCK_THREAD
+  archiveType: ButtonCustomId.ARCHIVE_THREAD | ButtonCustomId.LOCK_THREAD,
 ): Promise<object> => {
   const body: RESTPostAPIChannelMessageJSONBody = {
     content: `This thread has been ${archiveType === ButtonCustomId.ARCHIVE_THREAD ? "archived" : "locked"} by <@${closerId}>`,
@@ -239,7 +239,7 @@ const closeThread = async (
   rest: REST,
   threadId: Snowflake,
   archiveType: ButtonCustomId.ARCHIVE_THREAD | ButtonCustomId.LOCK_THREAD,
-  closerId: Snowflake
+  closerId: Snowflake,
 ): Promise<object> => {
   const body: RESTPatchAPIChannelJSONBody = {
     archived: true,

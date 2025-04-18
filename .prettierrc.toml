@@ -3,4 +3,4 @@ printWidth = 120
 plugins = ["@trivago/prettier-plugin-sort-imports"]
 importOrder = ["^[./]"]
 importOrderSortSpecifiers = true
-trailingComma = "es5"
+trailingComma = "all"
