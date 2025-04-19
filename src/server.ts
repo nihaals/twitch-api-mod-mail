@@ -57,7 +57,7 @@ const interactionsHandler = async (interaction: any, env: Env): Promise<Response
   } else if (interaction.type === InteractionType.MessageComponent) {
     const rest = makeRestClient(env)
     if (interaction.data.custom_id === ButtonCustomId.OPEN_THREAD) {
-      const thread = await createThread(rest, interaction.channel_id)
+      const thread = await createThread(rest, interaction.channel_id, interaction.guild_id)
       // @ts-ignore
       const threadId = thread.id
       await sendStartThreadMessage(rest, threadId, env.DISCORD_MODERATOR_ROLE_ID, interaction.member.user.id)
@@ -213,15 +213,57 @@ const editOpenThreadMessage = async (rest: REST, channelId: Snowflake, messageId
 }
 
 /** Get the next thread name */
-const getNextThreadName = async (rest: REST, channelId: Snowflake): Promise<string> => {
-  // TODO
+const getNextThreadName = async (rest: REST, channelId: Snowflake, guildId: Snowflake): Promise<string> => {
   // Race condition
-  return "mod-mail-0000"
+  const activeThreadsResponse = await getActiveThreads(rest, guildId)
+  // @ts-ignore
+  const activeThreads = activeThreadsResponse.threads
+  const activeThreadNames = activeThreads
+    // @ts-ignore
+    .filter((thread) => thread.parent_id === channelId && thread.name.startsWith("mod-mail-"))
+    .map((thread: any) => thread.name)
+
+  let archivedThreadResponse = await getLastArchivedThread(rest, channelId)
+  let archivedThreadName = "mod-mail-0000"
+  // @ts-ignore
+  if (archivedThreadResponse.threads.length > 0) {
+    // @ts-ignore
+    archivedThreadName = archivedThreadResponse.threads[0].name
+    if (!archivedThreadName.startsWith("mod-mail-")) {
+      archivedThreadName = "mod-mail-0000"
+    }
+  }
+
+  // Merge active and archived thread names
+  const threadNames = activeThreadNames
+  threadNames.push(archivedThreadName)
+  if (threadNames.some((name: any) => !name.startsWith("mod-mail-"))) {
+    throw new Error("Unexpected thread name format")
+  }
+  threadNames.sort()
+
+  // Get the last thread name
+  const lastThreadName = threadNames.at(-1)
+  const lastThreadNumber = parseInt(lastThreadName.split("-")[2])
+
+  return `mod-mail-${String(lastThreadNumber + 1).padStart(4, "0")}`
+}
+
+/** Get all active threads */
+const getActiveThreads = async (rest: REST, guildId: Snowflake): Promise<object> => {
+  const threads = await rest.get(Routes.guildActiveThreads(guildId))
+  return threads as object
+}
+
+/** Get the most recent joined archived private thread */
+const getLastArchivedThread = async (rest: REST, channelId: Snowflake): Promise<object> => {
+  const threads = await rest.get(Routes.channelJoinedArchivedThreads(channelId))
+  return threads as object
 }
 
 /** Create the private thread used for the mod mail */
-const createThread = async (rest: REST, channelId: Snowflake): Promise<object> => {
-  const threadName = await getNextThreadName(rest, channelId)
+const createThread = async (rest: REST, channelId: Snowflake, guildId: Snowflake): Promise<object> => {
+  const threadName = await getNextThreadName(rest, channelId, guildId)
   const body: RESTPostAPIChannelThreadsJSONBody = {
     name: threadName,
     type: ChannelType.PrivateThread,
